@@ -1,11 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>eli15</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ELI15 - Explain Like I'm 15</title>
 </head>
 <body>
-    <button></button>
+  <h1>🧠 ELI15: Explain Like I'm 15</h1>
+
+  <input type="text" id="questionInput" placeholder="Enter your question..." />
+  <button id="explainBtn">Explain</button>
+
+  <h3>Explanation:</h3>
+  <div id="result"></div>
+
+  <script>
+    const button = document.getElementById("explainBtn");
+    const input = document.getElementById("questionInput");
+    const result = document.getElementById("result");
+
+    button.addEventListener("click", async () => {
+      const question = input.value.trim();
+      if (!question) return alert("Please enter a question!");
+
+      result.innerText = "⏳ Explaining...";
+      try {
+        const res = await fetch("/api/explain", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ question }),
+        });
+
+        const data = await res.json();
+        if (data.explanation) {
+          result.innerText = data.explanation;
+        } else {
+          result.innerText = "❌ Failed to explain. Try again.";
+        }
+      } catch (err) {
+        result.innerText = "⚠️ Error calling the API.";
+        console.error(err);
+      }
+    });
+  </script>
 </body>
 </html>
